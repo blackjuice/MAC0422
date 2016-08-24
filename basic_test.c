@@ -7,40 +7,40 @@
 #include "sys/stat.h"
 #define TRUE  1
 #define FALSE 0
-#define LSH_TOK_BUFSIZE 64
-#define LSH_TOK_DELIM " \t\r\n\a"
 
+#define DELIM " \n"
 #define MAX_LENGTH 100
 
-int protegepracaramba( const char *filename );
+int protegepracaramba( char *filename );
+int liberageral ( char *filename );
 
-<<<<<<< HEAD
-int protegepracaramba( const char *filename ) {
-    int tmp = syscall(SYS_chmod, *filename, 0);
-    printf ("%d", tmp);
-=======
 int protegepracaramba( char *filename ) {
-    int tmp = syscall(SYS_chmod, filename, 0);
-    //printf ("%d\n", tmp);
-    //printf ("%s\n", (char *)(filename));
->>>>>>> origin/master
-    return tmp;
+    return syscall(SYS_chmod, filename, 0);
+}
+
+int liberageral ( char *filename ) {
+    return syscall(SYS_chmod, filename, 0777);    
 }
 
 int main() {
     char line_tudo[MAX_LENGTH];
-    int proc;
-    //char str[] ="protegepracaramba /GitHub/MAC0422_Operating_Systems/test";
+    int processo;
     char * tmp;
 
     while (1) {
         printf("$ ");
         if (!fgets(line_tudo, MAX_LENGTH, stdin)) break;
         
-        tmp = strtok (line_tudo, " \n");
+        tmp = strtok (line_tudo, DELIM);
         if (!strcmp("protegepracaramba", tmp)) {
-            tmp = strtok (NULL, " \n");
-            proc = protegepracaramba(tmp);
+            printf("entrou protegepracaramba\n");
+            tmp = strtok (NULL, DELIM);
+            processo = protegepracaramba(tmp);
+        }
+        if (!strcmp("liberageral", tmp)) {
+            printf("entrou liberageral\n");
+            tmp = strtok (NULL, DELIM);
+            processo = liberageral(tmp);
         }
         else system(line_tudo);
     }
