@@ -13,9 +13,9 @@
 
 #define MAX_LENGTH 100
 
-int protegepracaramba( char *filename );
+int protegepracaramba( const char *filename );
 
-int protegepracaramba( char *filename ) {
+int protegepracaramba( const char *filename ) {
     int tmp = syscall(SYS_chmod, *filename, 0);
     printf ("%d", tmp);
     return tmp;
