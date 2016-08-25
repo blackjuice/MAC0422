@@ -47,7 +47,8 @@ int rodeveja (const char * comando) {
         //printf("comando > %s\n", comando);
         //printf("parametro > %s\n", parametro);
         //tmp = execve(comando, parametro, 0); /* execute command */
-        tmp = execve(comando, parametro, newenviron);
+        //tmp = execve(comando, parametro, newenviron);
+        tmp = execve(comando[0], *comando, newenviron);
         printf ("%d", tmp);
     }
     return 0;
@@ -55,8 +56,9 @@ int rodeveja (const char * comando) {
 
 int main(int argc, char * const argv[], char * const envp[]) {
     char line_tudo[MAX_LENGTH];
-    int processo;
+    int processo, i;
     char * tmp, * tmp1;
+    char *param[10];
     char * const rapidinho[] = {NULL};
 
     while (1) {
@@ -77,13 +79,22 @@ int main(int argc, char * const argv[], char * const envp[]) {
         if (!strcmp("rodeveja", tmp)) {
             printf("entrou rodeveja\n");
             tmp = strtok (NULL, " \n\t\r");
+            strcpy(param[0], tmp);
+
+            for (i = 1; tmp != NULL; i++) {
+                tmp = strtok(NULL, DELIM);
+                param[i] = malloc(sizeof(char) * strlen(tmp));
+                strcpy(param[i], tmp); 
+            }
 
             tmp1 = tmp;
             
             tmp = strtok (NULL, " \n\t\r");
             //printf("%s\n", tmp);
             //printf("%s\n", tmp1);
-            processo = rodeveja(tmp1);
+            //processo = rodeveja(tmp1);
+            processo = rodeveja(param);
+            free(param);
             //if (tmp == NULL) {
             //    processo = rodeveja(tmp1, 0);
             //}
