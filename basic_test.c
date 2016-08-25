@@ -15,7 +15,7 @@
 /*  */
 int protegepracaramba( char *filename );
 int liberageral ( char *filename );
-int rodeveja (const char * comando, char *const parametro);
+int rodeveja (const char * comando);
 
 int protegepracaramba( char *filename ) {
     return syscall(SYS_chmod, filename, 0);
@@ -26,17 +26,15 @@ int liberageral ( char *filename ) {
 }
 
 //int rodeveja (char * comando, char * parametro[], char *filename, char * env[]) {
-int rodeveja (const char * comando, char *const parametro[]) {
+int rodeveja (const char * comando) {
 
     //execve( filename, argv, envp);
     int status;
     int tmp;
-    char *n1, *n2;
-    n1 = NULL;
-    n2 = NULL;
 
     //char *newargv[] = 
-    char *newenviron[] = { NULL };
+    char *const parametro[] = { NULL };
+    char *const newenviron[] = { NULL };
 
     if (fork() != 0){
         /* Parent code. */
@@ -46,8 +44,8 @@ int rodeveja (const char * comando, char *const parametro[]) {
         /* Child code. */
         //tmp = execve(command, parameters, 0); /* execute command */ }
         //tmp = execve(comando, &parametro, 0); /* execute command */
-        printf("comando > %s\n", comando);
-        printf("parametro > %s\n", parametro);
+        //printf("comando > %s\n", comando);
+        //printf("parametro > %s\n", parametro);
         //tmp = execve(comando, parametro, 0); /* execute command */
         tmp = execve(comando, parametro, newenviron);
         printf ("%d", tmp);
@@ -85,7 +83,7 @@ int main(int argc, char * const argv[], char * const envp[]) {
             tmp = strtok (NULL, " \n\t\r");
             //printf("%s\n", tmp);
             //printf("%s\n", tmp1);
-            processo = rodeveja(tmp1, tmp);
+            processo = rodeveja(tmp1);
             //if (tmp == NULL) {
             //    processo = rodeveja(tmp1, 0);
             //}
