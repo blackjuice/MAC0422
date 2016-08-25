@@ -41,17 +41,50 @@ int rodeveja (char **comando) {
     int         status;
     int         tmp;
     char *const newenviron[] = { NULL };
+    pid_t pid = fork();
 
     // processo pai
-    if (fork() != 0){
-         wait(&status);
-    } 
+    /*
+    if (pid != 0){
+        if (wait(&status) != -1) {
+            if (WIFEXITED(status)) {
+                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
+            }
+            else if (WIFSIGNALED(status)) {
+                printf("I hate Química\n");
+            }
+        } 
+    }*/
+
+    
+ 
     // processo filho
+    /*
     else {
         tmp = execve(comando[0], comando, newenviron);
-        printf("programa %s retorna %d\n", comando[0], tmp);
-        printf("%d", tmp);
+    }*/
+
+        // processo filho
+    if (pid == 0) {
+        tmp = execve(comando[0], comando, newenviron);
     }
+    else if (pid == -1) {
+        perror("wait()");
+    }
+    else {
+        if (wait(&status) != -1) {
+            if (WIFEXITED(status)) {
+                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
+            }
+            else if (WIFSIGNALED(status)) {
+                printf("I hate Química\n");
+            }
+        } 
+    } 
+        
+
+
+
     return 0;
 }
 
