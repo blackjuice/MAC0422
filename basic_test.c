@@ -91,9 +91,6 @@ int main(int argc, char * const argv[], char * const envp[]) {
             //    processo = rodeveja(tmp1, tmp);
             //}
 
-
-//            printf("tmp1 > %s\n", tmp1);
-//            processo = rodeveja(tmp, tmp1);
         }
         else system(line_tudo);
     }
