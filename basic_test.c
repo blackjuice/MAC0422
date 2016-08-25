@@ -16,7 +16,7 @@
 #define FALSE       0
 #define DELIM       " \n"
 #define MAX_LENGTH  100
-#define BUFFSIZE    20
+#define BUFFSIZE    50
 
 /*-------------------------------------------------*/
 /*-----------DECLARACAO DAS FUNCOES----------------*/
@@ -24,6 +24,7 @@
 int protegepracaramba   ( char *filename );
 int liberageral         ( char *filename );
 int rodeveja            ( char **comando );
+int rode                ( char **comando );
 void free_tokens        ( char **tokens );
 
 /*-------------------------------------------------*/
@@ -43,50 +44,58 @@ int rodeveja (char **comando) {
     char *const newenviron[] = { NULL };
     pid_t pid = fork();
 
-    // processo pai
-    /*
-    if (pid != 0){
-        if (wait(&status) != -1) {
-            if (WIFEXITED(status)) {
-                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
-            }
-            else if (WIFSIGNALED(status)) {
-                printf("I hate Química\n");
-            }
-        } 
-    }*/
-
-    
- 
     // processo filho
-    /*
-    else {
-        tmp = execve(comando[0], comando, newenviron);
-    }*/
-
-        // processo filho
     if (pid == 0) {
         tmp = execve(comando[0], comando, newenviron);
     }
+    // erro no fork()
     else if (pid == -1) {
-        perror("wait()");
+        perror("Erro");
+        exit(0);
     }
+    // processo pai
     else {
         if (wait(&status) != -1) {
-            if (WIFEXITED(status)) {
+            if (WIFEXITED(status)) { 
                 printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
             }
             else if (WIFSIGNALED(status)) {
-                printf("I hate Química\n");
+                printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
             }
-        } 
+        }
     } 
-        
-
-
-
     return 0;
 }
+/*
+int rode ( char **comando) {
+    int         status;
+    int         tmp;
+    char *const newenviron[] = { NULL };
+    pid_t pid = fork();
+
+    // processo filho
+    if (pid == 0) {
+        tmp = execve(comando[0], comando, newenviron);
+    }
+    // erro no fork()
+    else if (pid == -1) {
+        perror("Erro");
+        exit(0);
+    }
+    // processo pai
+    else {
+        if (wait(&status) != -1) {
+            if (WIFEXITED(status)) { 
+                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
+            }
+            else if (WIFSIGNALED(status)) {
+                printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
+            }
+        }
+    } 
+    return 0;
+}
+*/
 
 /*-------------------------------------------------*/
 /*-------------FUNCOES AUXILIARES------------------*/
@@ -142,6 +151,23 @@ int main () {
 
             free_tokens(tokens);
         }
+        /* rode <caminho do programa> */
+/*
+        if (!strcmp("rode", tmp)) {
+            tokens  = malloc(BUFFSIZE * sizeof(char*));
+            tmp     = strtok(NULL, DELIM);
+
+            for (i = 0; tmp != NULL; i++) {
+                tokens[i]   = malloc(strlen(tmp) * sizeof(char));
+                strcpy(tokens[i], tmp);
+                tmp         = strtok(NULL, DELIM);
+            }
+            tokens[i]   = NULL;
+            processo    = rode(tokens);
+
+            free_tokens(tokens);
+        }
+*/
         //else 
           //  system(line_tudo);
     }
