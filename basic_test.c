@@ -42,27 +42,21 @@ int rodeveja (char **comando) {
     } 
     else {
         /* Child code. */
-        //tmp = execve(command, parameters, 0); /* execute command */ }
-        //tmp = execve(comando, &parametro, 0); /* execute command */
-        //printf("comando > %s\n", comando);
-        //printf("parametro > %s\n", parametro);
-        //tmp = execve(comando, parametro, 0); /* execute command */
-        //tmp = execve(comando, parametro, newenviron);
+        printf ("%s", comando[0]);
         tmp = execve(comando[0], comando, newenviron);
+        printf("programa %s retorna %d\n", comando[0], tmp);
         printf ("%d", tmp);
     }
     return 0;
 }
 
-int main(int argc, char * const argv[], char * const envp[]) {
+int main(int argc, char * const argv[], char * const envp[]) 
+{
     char line_tudo[MAX_LENGTH];
-    int processo, i = 0;
+    int processo, i, j;
     char * tmp, * tmp1;
-    char **tokens = malloc(100 * sizeof(char*));
-    
+    char **tokens;
     char * const rapidinho[] = {NULL};
-
-    
 
     while (1) {
         printf("$ ");
@@ -80,11 +74,10 @@ int main(int argc, char * const argv[], char * const envp[]) {
             processo = liberageral(tmp);
         }
         if (!strcmp("rodeveja", tmp)) {
-            printf("entrou rodeveja\n");
-
-            //tmp = strtok (NULL, " \n\t\r");
-            //strcpy(param[0], tmp);
+            i = 0;  
+            tokens = malloc(50 * sizeof(char*));
             tmp = strtok(NULL, DELIM);
+
             while(tmp != NULL) {
                 tokens[i] = malloc(strlen(tmp) * sizeof(char));
                 strcpy(tokens[i], tmp);
@@ -92,24 +85,14 @@ int main(int argc, char * const argv[], char * const envp[]) {
                 tmp = strtok(NULL, DELIM);
             }
             tokens[i] = NULL;
-
             processo = rodeveja(tokens);
-            //tmp1 = tmp;
-            
-            //tmp = strtok (NULL, " \n\t\r");
-            //printf("%s\n", tmp);
-            //printf("%s\n", tmp1);
-            //processo = rodeveja(tmp1);
-            //processo = rodeveja(param);
-            //if (tmp == NULL) {
-            //    processo = rodeveja(tmp1, 0);
-            //}
-            //else {
-            //    processo = rodeveja(tmp1, tmp);
-            //}
 
+            for (i = 0; i < 50; i++)
+                free(tokens[i]);
+            
         }
-        else system(line_tudo);
+        //else 
+          //  system(line_tudo);
     }
 
     return 0;
