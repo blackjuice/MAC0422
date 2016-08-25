@@ -1,23 +1,9 @@
 #include <stdio.h>
-#include <string.h>
+#include <unistd.h>
 
-int main()
-{
-    char * comando;
-    char * parametro;
-    char * const rapidinho[] = {NULL};
-
-    char line[18] = "hello world bitch";
-    printf("%s\n", line);
-    comando = strtok(line, " \n");
-    printf("> %s\n", comando);
-
-    comando = strtok(NULL, "");
-    printf(">> %s\n", comando);
-    
-    printf("rapidinho = %s\n", *rapidinho);
-
-    printf("%c\n", parametro[0]);
-    //printf("%s\n", strcpy(*rapidinho, parametro));
-    return 0;
+int main (void) {
+    char * const argv[] = {"/bin/ls", "-la", NULL};
+    char * const envp[] = {NULL};
+    int rc = execve (argv[0], argv, envp);
+    return rc;
 }

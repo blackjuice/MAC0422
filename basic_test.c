@@ -79,22 +79,45 @@ int main(int argc, char * const argv[], char * const envp[]) {
         if (!strcmp("rodeveja", tmp)) {
             printf("entrou rodeveja\n");
             tmp = strtok (NULL, " \n\t\r");
+            param[0] = malloc(sizeof(char) * strlen(tmp));
             strcpy(param[0], tmp);
+            printf("param[0] > %s\n", param[0]);
+            tmp = strtok(NULL, DELIM);
 
             for (i = 1; tmp != NULL; i++) {
-                tmp = strtok(NULL, DELIM);
                 param[i] = malloc(sizeof(char) * strlen(tmp));
                 strcpy(param[i], tmp); 
+                printf("param[i] >>> %s\n", param[i]);
+                tmp = strtok(NULL, DELIM);
+                printf("tmp >>> %s\n", tmp);
             }
 
             tmp1 = tmp;
+            printf("saiu do for >>> %s\n", tmp);
             
             tmp = strtok (NULL, " \n\t\r");
+            printf("tmp >>> %s\n", tmp);
             //printf("%s\n", tmp);
             //printf("%s\n", tmp1);
             //processo = rodeveja(tmp1);
-            processo = rodeveja(param);
-            free(param);
+            //processo = rodeveja(param);
+            
+            //free(param);
+            printf("%d\n", strlen(param));
+            printf("PREPARA\n");
+
+            for (i = 0; i < strlen(param); i++) {
+                printf("%s\n", param[i]);
+
+            }
+            /*
+            for (i = 0; i < 10; i++) {
+                if (param[i] != 0) {
+                    printf("%s\n", param[i]);
+                    free(param[i]);
+                }
+            }*/
+            printf("saiu ai BIRL\n");
             //if (tmp == NULL) {
             //    processo = rodeveja(tmp1, 0);
             //}
