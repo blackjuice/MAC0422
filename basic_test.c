@@ -15,7 +15,7 @@
 /*  */
 int protegepracaramba( char *filename );
 int liberageral ( char *filename );
-int rodeveja (const char * comando);
+int rodeveja (char **comando);
 
 int protegepracaramba( char *filename ) {
     return syscall(SYS_chmod, filename, 0);
@@ -26,7 +26,7 @@ int liberageral ( char *filename ) {
 }
 
 //int rodeveja (char * comando, char * parametro[], char *filename, char * env[]) {
-int rodeveja (const char * comando) {
+int rodeveja (char **comando) {
 
     //execve( filename, argv, envp);
     int status;
@@ -48,7 +48,7 @@ int rodeveja (const char * comando) {
         //printf("parametro > %s\n", parametro);
         //tmp = execve(comando, parametro, 0); /* execute command */
         //tmp = execve(comando, parametro, newenviron);
-        tmp = execve(comando[0], *comando, newenviron);
+        tmp = execve(comando[0], comando, newenviron);
         printf ("%d", tmp);
     }
     return 0;
@@ -56,10 +56,13 @@ int rodeveja (const char * comando) {
 
 int main(int argc, char * const argv[], char * const envp[]) {
     char line_tudo[MAX_LENGTH];
-    int processo, i;
+    int processo, i = 0;
     char * tmp, * tmp1;
-    char *param[10];
+    char **tokens = malloc(100 * sizeof(char*));
+    
     char * const rapidinho[] = {NULL};
+
+    
 
     while (1) {
         printf("$ ");
@@ -78,46 +81,26 @@ int main(int argc, char * const argv[], char * const envp[]) {
         }
         if (!strcmp("rodeveja", tmp)) {
             printf("entrou rodeveja\n");
-            tmp = strtok (NULL, " \n\t\r");
-            param[0] = malloc(sizeof(char) * strlen(tmp));
-            strcpy(param[0], tmp);
-            printf("param[0] > %s\n", param[0]);
+
+            //tmp = strtok (NULL, " \n\t\r");
+            //strcpy(param[0], tmp);
             tmp = strtok(NULL, DELIM);
-
-            for (i = 1; tmp != NULL; i++) {
-                param[i] = malloc(sizeof(char) * strlen(tmp));
-                strcpy(param[i], tmp); 
-                printf("param[i] >>> %s\n", param[i]);
+            while(tmp != NULL) {
+                tokens[i] = malloc(strlen(tmp) * sizeof(char));
+                strcpy(tokens[i], tmp);
+                i++;
                 tmp = strtok(NULL, DELIM);
-                printf("tmp >>> %s\n", tmp);
             }
+            tokens[i] = NULL;
 
-            tmp1 = tmp;
-            printf("saiu do for >>> %s\n", tmp);
+            processo = rodeveja(tokens);
+            //tmp1 = tmp;
             
-            tmp = strtok (NULL, " \n\t\r");
-            printf("tmp >>> %s\n", tmp);
+            //tmp = strtok (NULL, " \n\t\r");
             //printf("%s\n", tmp);
             //printf("%s\n", tmp1);
             //processo = rodeveja(tmp1);
             //processo = rodeveja(param);
-            
-            //free(param);
-            printf("%d\n", strlen(param));
-            printf("PREPARA\n");
-
-            for (i = 0; i < strlen(param); i++) {
-                printf("%s\n", param[i]);
-
-            }
-            /*
-            for (i = 0; i < 10; i++) {
-                if (param[i] != 0) {
-                    printf("%s\n", param[i]);
-                    free(param[i]);
-                }
-            }*/
-            printf("saiu ai BIRL\n");
             //if (tmp == NULL) {
             //    processo = rodeveja(tmp1, 0);
             //}
