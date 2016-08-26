@@ -21,11 +21,7 @@
 /*-------------------------------------------------*/
 /*-----------DECLARACAO DAS FUNCOES----------------*/
 /*-------------------------------------------------*/
-int protegepracaramba   ( char *filename );
-int liberageral         ( char *filename );
-int rodeveja            ( char **comando );
-int rode                ( char **comando );
-void free_tokens        ( char **tokens );
+
 
 /*-------------------------------------------------*/
 /*-------------------FUNCOES-----------------------*/
@@ -74,7 +70,8 @@ int rode ( char **comando) {
     pid_t pid = fork();
 
     // processo filho
-    if (pid == 0) {
+    if (pid == 0 ) {
+        printf("entrou\n");
         tmp = execve(comando[0], comando, newenviron);
     }
     // erro no fork()
@@ -82,19 +79,6 @@ int rode ( char **comando) {
         perror("Erro");
         exit(0);
     }
-    // processo pai
-/*
-    else {
-        if (wait(&status) != -1) {
-            if (WIFEXITED(status)) { 
-                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
-            }
-            else if (WIFSIGNALED(status)) {
-                printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
-            }
-        }
-    }
-*/ 
     return 0;
 }
 
@@ -104,7 +88,6 @@ int rode ( char **comando) {
 /*-------------------------------------------------*/
 void free_tokens (char **tokens) {
     int i;
-
     for (i = 0; i < BUFFSIZE; i++)
         free(tokens[i]);
 }
@@ -153,8 +136,8 @@ int main () {
 
             free_tokens(tokens);
         }
-        /* rode <caminho do programa> */
-/*
+
+        // rode <caminho do programa> 
         if (!strcmp("rode", tmp)) {
             tokens  = malloc(BUFFSIZE * sizeof(char*));
             tmp     = strtok(NULL, DELIM);
@@ -169,7 +152,6 @@ int main () {
 
             free_tokens(tokens);
         }
-*/
         //else 
           //  system(line_tudo);
     }
