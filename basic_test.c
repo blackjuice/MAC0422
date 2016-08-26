@@ -90,6 +90,18 @@ void free_tokens (char **tokens) {
     int i;
     for (i = 0; i < BUFFSIZE; i++)
         free(tokens[i]);
+    free(tokens);
+}
+
+void separa_token (char *comando, char *parametro[]){
+    int i;
+    char *tmp;
+        tmp = strtok(comando, DELIM);   
+    for(i = 0; tmp != NULL; i++) {
+        parametro[i] = tmp;
+        tmp = strtok (NULL, DELIM);
+    }
+    parametro[i] = NULL;
 }
 
 /*-------------------------------------------------*/
@@ -100,6 +112,7 @@ int main () {
     int     processo, i, j;
     char    * tmp, * tmp1;
     char    **tokens;
+    char *argv[30];
 
     while (1) {
         printf("$ ");
@@ -109,51 +122,33 @@ int main () {
         tmp = strtok (line_tudo, DELIM);
 
         /* CONDICOES */
-        /* protegepracaramba <caminho do arquivo> */
+        // protegepracaramba <caminho do arquivo>
         if (!strcmp("protegepracaramba", tmp)) {
             tmp         = strtok (NULL, DELIM);
             processo    = protegepracaramba(tmp);
         }
 
-        /* liberageral <caminho do arquivo> */
+        // liberageral <caminho do arquivo>
         if (!strcmp("liberageral", tmp)) {
             tmp         = strtok (NULL, DELIM);
             processo    = liberageral(tmp);
         }
 
-        /* rodeveja <caminho do programa> */
+        // rodeveja <caminho do programa>
         if (!strcmp("rodeveja", tmp)) {
-            tokens  = malloc(BUFFSIZE * sizeof(char*));
-            tmp     = strtok(NULL, DELIM);
+            tmp = strtok(NULL, DELIM);
+            separa_token (tmp, argv);
+            processo    = rodeveja(argv);
 
-            for (i = 0; tmp != NULL; i++) {
-                tokens[i]   = malloc(strlen(tmp) * sizeof(char));
-                strcpy(tokens[i], tmp);
-                tmp         = strtok(NULL, DELIM);
-            }
-            tokens[i]   = NULL;
-            processo    = rodeveja(tokens);
-
-            free_tokens(tokens);
         }
 
         // rode <caminho do programa> 
         if (!strcmp("rode", tmp)) {
-            tokens  = malloc(BUFFSIZE * sizeof(char*));
-            tmp     = strtok(NULL, DELIM);
 
-            for (i = 0; tmp != NULL; i++) {
-                tokens[i]   = malloc(strlen(tmp) * sizeof(char));
-                strcpy(tokens[i], tmp);
-                tmp         = strtok(NULL, DELIM);
-            }
-            tokens[i]   = NULL;
-            processo    = rode(tokens);
-
-            free_tokens(tokens);
+            tmp = strtok(NULL, DELIM);
+            separa_token (tmp, argv);
+            processo    = rode(argv);
         }
-        //else 
-          //  system(line_tudo);
     }
     return 0;
 }
