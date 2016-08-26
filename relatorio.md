@@ -168,6 +168,8 @@ Assim, usando esse array de strings como parâmetro, chamamos a função `rodeve
 
 Temos peculiaridades na função `rode()`. O `mac422shell` foi testado em dois sistemas operacionais: `Mac OSX` e `Minix`.
 
+### Mac OSX
+
 No `Mac OSX`, a função funciona perfeitamente:
 
 * ocorre a monopolização do teclado;
@@ -184,6 +186,16 @@ Em ordem, entramos com as instruções:
 2. `$ rode /bin/ls -la`: executamos `rode`. Ela retorna a saída e monopoliza o teclado;
 3. `rodeveja /bin/ls`: por último, voltamos com uma função básica para certificar que o programa continua funcionando;
 4. `Control + D`: para sair do programa.
+
+**Note que utilizamos o `$` como indicador da espera de uma instrução no shell.**
+
+### Minix
+
+Já no `Minix`, `$` não desaparece quando a mesma sequência de instruções é executada:
+
+![](rode_minix_1.png)
+
+Como solução, executamos a linha `printf ("\33[2K\r")`, que funciona como uma *backspace*, que apaga o `$`. 
 
 <div style="page-break-after: always;"></div>
 
