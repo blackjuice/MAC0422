@@ -11,17 +11,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/syscall.h>
-#include "sys/stat.h"
+#include <sys/stat.h>
 #define TRUE        1
-#define FALSE       0
-#define DELIM       " \n"
+#define DELIM       " \n\0"
 #define MAX_LENGTH  100
 #define BUFFSIZE    50
-
-/*-------------------------------------------------*/
-/*-----------DECLARACAO DAS FUNCOES----------------*/
-/*-------------------------------------------------*/
-
 
 /*-------------------------------------------------*/
 /*-------------------FUNCOES-----------------------*/
@@ -36,13 +30,12 @@ int liberageral ( char *filename ) {
 
 int rodeveja (char **comando) {
     int         status;
-    int         tmp;
     char *const newenviron[] = { NULL };
     pid_t pid = fork();
 
     // processo filho
     if (pid == 0) {
-        tmp = execve(comando[0], comando, newenviron);
+        execve(comando[0], comando, newenviron);
     }
     // erro no fork()
     else if (pid == -1) {
@@ -52,28 +45,20 @@ int rodeveja (char **comando) {
     // processo pai
     else {
         if (wait(&status) != -1) {
-            if (WIFEXITED(status)) { 
-                printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
-            }
-            else if (WIFSIGNALED(status)) {
-                printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
-            }
+            if (WIFEXITED(status)) printf("programa %s retorna com código %d\n", comando[0], WEXITSTATUS(status));
+            else if (WIFSIGNALED(status)) printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
         }
-    } 
+    }
     return 0;
 }
 
 int rode ( char **comando) {
-    int         status;
-    int         tmp;
     char *const newenviron[] = { NULL };
     pid_t pid = fork();
 
     // processo filho
-    if (pid == 0 ) {
-        printf("entrou\n");
-        tmp = execve(comando[0], comando, newenviron);
-    }
+    if (pid == 0 ) execve(comando[0], comando, newenviron);
+
     // erro no fork()
     else if (pid == -1) {
         perror("Erro");
@@ -86,20 +71,15 @@ int rode ( char **comando) {
 /*-------------------------------------------------*/
 /*-------------FUNCOES AUXILIARES------------------*/
 /*-------------------------------------------------*/
-void free_tokens (char **tokens) {
-    int i;
-    for (i = 0; i < BUFFSIZE; i++)
-        free(tokens[i]);
-    free(tokens);
-}
-
 void separa_token (char *comando, char *parametro[]){
     int i;
     char *tmp;
-        tmp = strtok(comando, DELIM);   
+    tmp = strtok(comando, DELIM);
+    printf("tmp = %s\n", tmp);
     for(i = 0; tmp != NULL; i++) {
         parametro[i] = tmp;
         tmp = strtok (NULL, DELIM);
+        printf("parametro = %s\n", parametro[i]);
     }
     parametro[i] = NULL;
 }
@@ -109,12 +89,11 @@ void separa_token (char *comando, char *parametro[]){
 /*-------------------------------------------------*/
 int main () {
     char    line_tudo[MAX_LENGTH];
-    int     processo, i, j;
-    char    * tmp, * tmp1;
-    char    **tokens;
-    char *argv[30];
+    char    * tmp;
+    char    *parametro[30];
+    int i;
 
-    while (1) {
+    while (TRUE) {
         printf("$ ");
 
         if (!fgets(line_tudo, MAX_LENGTH, stdin)) break;
@@ -125,29 +104,36 @@ int main () {
         // protegepracaramba <caminho do arquivo>
         if (!strcmp("protegepracaramba", tmp)) {
             tmp         = strtok (NULL, DELIM);
-            processo    = protegepracaramba(tmp);
+            protegepracaramba(tmp);
         }
 
         // liberageral <caminho do arquivo>
         if (!strcmp("liberageral", tmp)) {
             tmp         = strtok (NULL, DELIM);
-            processo    = liberageral(tmp);
+            liberageral(tmp);
         }
 
         // rodeveja <caminho do programa>
         if (!strcmp("rodeveja", tmp)) {
             tmp = strtok(NULL, DELIM);
-            separa_token (tmp, argv);
-            processo    = rodeveja(argv);
+
+            printf("tmp = %s\n", tmp);
+            for(i = 0; tmp != NULL; i++) {
+                parametro[i] = tmp;
+                tmp = strtok (NULL, DELIM);
+                printf("parametro = %s\n", parametro[i]);
+            }
+            parametro[i] = NULL;
+            //separa_token (tmp, parametro);
+            rodeveja(parametro);
 
         }
 
         // rode <caminho do programa> 
         if (!strcmp("rode", tmp)) {
-
             tmp = strtok(NULL, DELIM);
-            separa_token (tmp, argv);
-            processo    = rode(argv);
+            separa_token (tmp, parametro);
+            rode(parametro);
         }
     }
     return 0;
