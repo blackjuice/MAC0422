@@ -10,22 +10,22 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/syscall.h>
 #include <sys/stat.h>
-#define TRUE        1
+
 #define DELIM       " \n\0"
-#define MAX_LENGTH  100
-#define BUFFSIZE    50
+#define DELIM_SPACE "\n\0"
+#define MAX_LENGTH  70
+#define BUFF_SIZE   50
 
 /*-------------------------------------------------*/
 /*-------------------FUNCOES-----------------------*/
 /*-------------------------------------------------*/
 int protegepracaramba ( char *filename ) {
-    return syscall(SYS_chmod, filename, 0);
+    return chmod(filename, 0);
 }
 
 int liberageral ( char *filename ) {
-    return syscall(SYS_chmod, filename, 0777);    
+    return chmod(filename, 0777);    
 }
 
 int rodeveja (char **comando) {
@@ -34,9 +34,8 @@ int rodeveja (char **comando) {
     pid_t pid = fork();
 
     // processo filho
-    if (pid == 0) {
-        execve(comando[0], comando, newenviron);
-    }
+    if (pid == 0) execve(comando[0], comando, newenviron);
+    
     // erro no fork()
     else if (pid == -1) {
         perror("Erro");
@@ -52,7 +51,7 @@ int rodeveja (char **comando) {
     return 0;
 }
 
-int rode ( char **comando) {
+void rode ( char **comando) {
     char *const newenviron[] = { NULL };
     pid_t pid = fork();
 
@@ -64,7 +63,6 @@ int rode ( char **comando) {
         perror("Erro");
         exit(0);
     }
-    return 0;
 }
 
 
@@ -75,11 +73,10 @@ void separa_token (char *comando, char *parametro[]){
     int i;
     char *tmp;
     tmp = strtok(comando, DELIM);
-    printf("tmp = %s\n", tmp);
+
     for(i = 0; tmp != NULL; i++) {
         parametro[i] = tmp;
         tmp = strtok (NULL, DELIM);
-        printf("parametro = %s\n", parametro[i]);
     }
     parametro[i] = NULL;
 }
@@ -90,10 +87,9 @@ void separa_token (char *comando, char *parametro[]){
 int main () {
     char    line_tudo[MAX_LENGTH];
     char    * tmp;
-    char    *parametro[30];
-    int i;
+    char    *parametro[BUFF_SIZE];
 
-    while (TRUE) {
+    while (1) {
         printf("$ ");
 
         if (!fgets(line_tudo, MAX_LENGTH, stdin)) break;
@@ -115,23 +111,14 @@ int main () {
 
         // rodeveja <caminho do programa>
         if (!strcmp("rodeveja", tmp)) {
-            tmp = strtok(NULL, DELIM);
-
-            printf("tmp = %s\n", tmp);
-            for(i = 0; tmp != NULL; i++) {
-                parametro[i] = tmp;
-                tmp = strtok (NULL, DELIM);
-                printf("parametro = %s\n", parametro[i]);
-            }
-            parametro[i] = NULL;
-            //separa_token (tmp, parametro);
+            tmp = strtok(NULL, DELIM_SPACE);
+            separa_token (tmp, parametro);
             rodeveja(parametro);
-
         }
 
         // rode <caminho do programa> 
         if (!strcmp("rode", tmp)) {
-            tmp = strtok(NULL, DELIM);
+            tmp = strtok(NULL, DELIM_SPACE);
             separa_token (tmp, parametro);
             rode(parametro);
         }
