@@ -66,7 +66,7 @@ int rodeveja (char **comando) {
     } 
     return 0;
 }
-/*
+
 int rode ( char **comando) {
     int         status;
     int         tmp;
@@ -83,6 +83,7 @@ int rode ( char **comando) {
         exit(0);
     }
     // processo pai
+/*
     else {
         if (wait(&status) != -1) {
             if (WIFEXITED(status)) { 
@@ -92,10 +93,11 @@ int rode ( char **comando) {
                 printf("pid %ld não detectou número do signal %d\n", (long)pid, WTERMSIG(status));
             }
         }
-    } 
+    }
+*/ 
     return 0;
 }
-*/
+
 
 /*-------------------------------------------------*/
 /*-------------FUNCOES AUXILIARES------------------*/
