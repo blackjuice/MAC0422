@@ -12,9 +12,9 @@
 
 2) Proteção 000 e 777
 
- 2.1) protegepracaramba ()
+	2.1) protegepracaramba ()
 
- 2.2) liberageral ()
+ 	2.2) liberageral ()
 
 3) Função: rodeveja ()
 
@@ -24,7 +24,13 @@
 
 6) Exemplo de execução
 
-7) Bibliografia
+	6.1) rodeveja ()
+
+	6.2) rode ()
+
+7) Justificativa de atraso
+
+8) Bibliografia
 
 <div style="page-break-after: always;"></div>
 
@@ -107,13 +113,13 @@ Caso contrário, teremos um processo **pai** e faremos a verificação:
 Muito similar com a função `rodeveja()`:
 
 ```cpp
-void rode ( char **comando) {
+void rode (char **comando) {
     char *const newenviron[] = { NULL };
     pid_t pid = fork();
 
     // processo filho
     if (pid == 0 ) execve(comando[0], comando, newenviron);
-
+	 
     // erro no fork()
     else if (pid == -1) {
         perror("Erro");
@@ -166,11 +172,11 @@ Assim, usando esse array de strings como parâmetro, chamamos a função `rodeve
 
 ## 6.2) rode()
 
-Temos peculiaridades na função `rode()`. O `mac422shell` foi testado em dois sistemas operacionais: `Mac OSX` e `Minix`.
+Temos peculiaridades na função `rode()`. O `mac422shell` foi testado em três sistemas operacionais: `Mac OSX`, `Linux` e `Minix`.
 
-### Mac OSX
+### Mac OSX e Linux
 
-No `Mac OSX`, a função funciona perfeitamente:
+Em `Mac OSX` e `Linux`, a função funciona perfeitamente:
 
 * ocorre a monopolização do teclado;
 * mostra a saída do shell e do programa;
@@ -182,24 +188,45 @@ No screenshot, foi feita a compilação e a execução `gcc mac422shell.c -o mac
 
 Em ordem, entramos com as instruções:
 
-1. `$  rodeveja /bin/ls`: realizamos uma instrução básica para ter certeza que o programa está rodando;
+1. `$ rodeveja /bin/ls`: realizamos uma instrução básica para ter certeza que o programa está rodando;
 2. `$ rode /bin/ls -la`: executamos `rode`. Ela retorna a saída e monopoliza o teclado;
 3. `rodeveja /bin/ls`: por último, voltamos com uma função básica para certificar que o programa continua funcionando;
 4. `Control + D`: para sair do programa.
 
-**Note que utilizamos o `$` como indicador da espera de uma instrução no shell.**
-
 ### Minix
 
-Já no `Minix`, `$` não desaparece quando a mesma sequência de instruções é executada:
+Já em `Minix`, foi feita o seguinte teste:
 
-![](rode_minix_1.png)
+![](img/novo.png)
 
-Como solução, executamos a linha `printf ("\33[2K\r")`, que funciona como uma *backspace*, que apaga o `$`. 
+O teste acima possui a seguinte sequência:
+
+1. `$ rodeveja /bin/ls`: realizamos uma instrução básica para ter certeza que o programa está rodando;
+2. `$ rode /bin/ls -la`: executamos `rode`. Ela retorna a saída e monopoliza o teclado;
+3. `rode ./test`: o executável `test` imprime "nothing";
+4. `Control + D`: para sair do programa.
+
+No caso mencionado, o teste funcionou perfeitamente. No entanto:
+
+![](img/novo2.png)
+
+Possui anomalias:
+
+1. `$ rodeveja /bin/ls`: realizamos uma instrução básica para ter certeza que o programa está rodando;
+2. `$ rode ./test`: o executável `test` imprime "nothing";
+3. `rode /bin/ls -la`: executamos `rode`. **Aqui** funcionou como deveria, portanto nada de estranho;
+4. `rode /bin/ls`: realizamos main um `rode`. **Mas**, aqui a anomalia se manifesta: seu resultado não monopoliza o teclado, sendo que a próxima linha de shell aparece com `$`;
+5. `Control + D`: saimos do programa com fracasso.
 
 <div style="page-break-after: always;"></div>
 
-# 7) Bibliografia
+# Justificativa de atraso
+
+O atraso se deve por conta da impossibilidade de corrigir essa anomalia que tivemos durante exercício e pela falta de iniciativa em procurar por ajuda para resolver esse problema encontrado.
+
+<div style="page-break-after: always;"></div>
+
+# 8) Bibliografia
 
 * http://stackoverflow.com/
 * http://man7.org/linux/man-pages/man2/
