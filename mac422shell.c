@@ -56,11 +56,19 @@ void rode ( char **comando) {
     pid_t pid = fork();
 
     // processo filho
+<<<<<<< HEAD
     if (pid == 0 ) {
         close(pid);
         execve(comando[0], comando, newenviron);
     }
     
+=======
+    if (pid == 0 )  {
+        //close(pid);
+        execve(comando[0], comando, newenviron);
+    }
+
+>>>>>>> origin/master
     // erro no fork()
     else if (pid == -1) {
         perror("Erro");
